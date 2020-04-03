@@ -1,0 +1,17 @@
+infra:
+  server_hostname: tunnel.example.com
+  server_region: 25  # Tokyo
+  server_plan: 201  # 1vCPU/1GB
+  server_os: 352  # Debian 10 x64 (buster)
+
+admin_user: vultr
+admin_pubkeys: # secret
+admin_password: # secret
+
+wireguard_port: # secret
+wireguard_subnet: # secret
+wireguard_private_key: # secret
+wireguard_public_key: # secret
+wireguard_clients: # secret
+
+ansible_python_interpreter: python3

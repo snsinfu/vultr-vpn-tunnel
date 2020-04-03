@@ -1,0 +1,6 @@
+[server]
+tunnel
+
+[server:vars]
+ansible_user={{ admin_user }}
+ansible_become_password={{ admin_password }}
