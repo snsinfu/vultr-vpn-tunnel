@@ -36,7 +36,7 @@ _terraform_apply.ok: _terraform_init.ok terraform/terraform.tfvars
 	@touch $@
 
 terraform/terraform.tfvars: terraform/terraform.tfvars.j2
-	ansible-playbook -e terraform_path=terraform make_tfvars.yml
+	scripts/ansible-template $< $@
 
 ansible/inventory/_10-terraform: _terraform_apply.ok
 	{ cd terraform; terraform output inventory; } > $@
