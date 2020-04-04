@@ -12,9 +12,11 @@ GENERATED_FILES = \
   ansible/inventory/_10-terraform
 
 
+# TASKS ----------------------------------------------------------------------
+
 .PHONY: all clean destroy ssh
 
-all: _connection.ok
+all: _provision.ok
 	@:
 
 clean:
@@ -26,6 +28,9 @@ destroy: terraform/terraform.tfvars
 
 ssh: _connection.ok
 	ssh -F ssh_config $$(scripts/ansible-print -t tunnel "{{ ansible_user }}@{{ ansible_host }}")
+
+
+# INFRASTRUCTURE -------------------------------------------------------------
 
 _terraform_init.ok:
 	cd terraform; terraform init
@@ -43,4 +48,11 @@ ansible/inventory/_10-terraform: _terraform_apply.ok
 
 _connection.ok: ansible/inventory/_10-terraform
 	ansible -m ping all
+	@touch $@
+
+
+# PROVISIONING ---------------------------------------------------------------
+
+_provision.ok: _connection.ok
+	ansible-playbook ansible/provision.yml
 	@touch $@
