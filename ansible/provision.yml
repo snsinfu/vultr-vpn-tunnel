@@ -1,4 +1,77 @@
 - hosts: tunnel
+  become: yes
 
   tasks:
-    - ping:
+
+    # ADMIN ------------------------------------------------------------------
+
+    - name: admin pubkeys are in sync
+      copy:
+        content: "{{ admin_pubkeys | join('\n') }}"
+        dest: .ssh/authorized_keys
+        mode: 0600
+      become: no
+
+
+    # DEBIAN -----------------------------------------------------------------
+
+    - name: apt cache is up to date
+      apt:
+        update_cache: yes
+        cache_valid_time: 86400
+
+
+    # WIREGUARD --------------------------------------------------------------
+
+    - name: debian unstable repository is enabled
+      apt_repository:
+        repo: deb http://deb.debian.org/debian/ unstable main
+        state: present
+
+    - name: debian unstable repository is pinned to low priority
+      copy:
+        content: |
+          Package: *
+          Pin: release a=unstable
+          Pin-Priority: 90
+        dest: /etc/apt/preferences.d/limit-unstable
+
+    - name: dkms and linux headers are installed
+      apt:
+        name:
+          - dkms
+          - linux-headers-{{ ansible_kernel }}
+        state: present
+
+
+    # IPTABLES ---------------------------------------------------------------
+
+    - name: iptables persistence packages are installed
+      apt:
+        name:
+          - netfilter-persistent
+          - iptables-persistent
+        state: present
+
+    - name: iptables rules file is up
+      template:
+        src: assets/iptables-rules.v4.j2
+        dest: /etc/iptables/rules.v4
+        mode: 0600
+      vars:
+        wan_interface: "{{ ansible_default_ipv4.interface }}"
+        vpn_interface: wg0
+      notify: restart iptables
+
+    - name: netfilter is activated
+      service:
+        name: netfilter-persistent
+        state: started
+        enabled: yes
+
+
+  handlers:
+    - name: restart iptables
+      service:
+        name: netfilter-persistent
+        state: restarted

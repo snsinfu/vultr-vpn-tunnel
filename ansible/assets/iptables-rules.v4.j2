@@ -1,0 +1,28 @@
+* filter
+
+:INPUT DROP
+:OUTPUT ACCEPT
+:FORWARD DROP
+
+# Use LOGDROP instead of DROP for logging dropped packets.
+-N LOGDROP
+-A LOGDROP -j LOG --log-prefix "iptables: " --log-level 4 -m limit --limit 60/min
+-A LOGDROP -j DROP
+
+# Loopback is open.
+-A INPUT -j ACCEPT -i lo
+
+# Accept packets related to known connections.
+-A INPUT   -j ACCEPT -m state --state ESTABLISHED,RELATED
+-A FORWARD -j ACCEPT -m state --state ESTABLISHED,RELATED
+
+# Open ports.
+-A INPUT -j ACCEPT -i {{ wan_interface }} -p icmp
+-A INPUT -j ACCEPT -i {{ wan_interface }} -p tcp --dport ssh -m state --state NEW
+-A INPUT -j LOGDROP
+
+# Forward packets among VPN clients.
+# -A FORWARD -j ACCEPT -i {{ vpn_interface }} -o {{ vpn_interface }} -m state --state NEW
+# -A FORWARD -j LOGDROP
+
+COMMIT
