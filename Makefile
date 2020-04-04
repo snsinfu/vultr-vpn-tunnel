@@ -25,7 +25,7 @@ destroy: terraform/terraform.tfvars
 	@rm -f _terraform_apply.ok
 
 ssh: _connection.ok
-	ssh -F ssh_config $$(scripts/ansible-render tunnel "{{ ansible_user }}@{{ ansible_host }}")
+	ssh -F ssh_config $$(scripts/ansible-print -t tunnel "{{ ansible_user }}@{{ ansible_host }}")
 
 _terraform_init.ok:
 	cd terraform; terraform init
