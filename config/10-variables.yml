@@ -8,6 +8,7 @@ admin_user: vultr
 admin_pubkeys: # secret
 admin_password: # secret
 
+wireguard_interface: wg0
 wireguard_port: # secret
 wireguard_subnet: # secret
 wireguard_private_key: # secret
