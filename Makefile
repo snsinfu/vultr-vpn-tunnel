@@ -47,7 +47,7 @@ ansible/inventory/_10-terraform: _terraform_apply.ok
 	{ cd terraform; terraform output inventory; } > $@
 
 _connection.ok: ansible/inventory/_10-terraform
-	ansible -m ping all
+	ansible -o -m ping all
 	@touch $@
 
 
