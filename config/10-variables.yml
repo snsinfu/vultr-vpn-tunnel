@@ -1,4 +1,6 @@
 infra:
+  terraform_s3_bucket: # secret
+  terraform_s3_key: vultr-vpn-tunnel/state
   server_hostname: tunnel.example.com
   server_region: 25  # Tokyo
   server_plan: 201  # 1vCPU/1GB

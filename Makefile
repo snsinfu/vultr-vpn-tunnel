@@ -10,6 +10,7 @@ CHECKPOINTS = \
   _provision.ok
 
 GENERATED_FILES = \
+  terraform/backend.tfvars \
   terraform/terraform.tfvars \
   ansible/inventory/_10-terraform \
   ansible/inventory/_20-wireguard \
@@ -36,13 +37,16 @@ ssh: _connection.ok
 
 # INFRASTRUCTURE -------------------------------------------------------------
 
-_terraform_init.ok:
-	cd terraform; terraform init
+_terraform_init.ok: terraform/backend.tfvars
+	cd terraform; terraform init -backend-config backend.tfvars
 	@touch $@
 
 _terraform_apply.ok: _terraform_init.ok terraform/terraform.tfvars
 	cd terraform; terraform apply -auto-approve
 	@touch $@
+
+terraform/backend.tfvars: terraform/backend.tfvars.j2
+	scripts/ansible-template $< $@
 
 terraform/terraform.tfvars: terraform/terraform.tfvars.j2
 	scripts/ansible-template $< $@

@@ -1,3 +1,8 @@
+terraform {
+  backend "s3" {
+  }
+}
+
 resource "vultr_server" "tunnel" {
   label     = var.server_hostname
   hostname  = var.server_hostname
