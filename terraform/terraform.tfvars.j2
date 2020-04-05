@@ -1,0 +1,7 @@
+server_hostname = "{{ infra.server_hostname }}"
+server_region = {{ infra.server_region }}
+server_plan = {{ infra.server_plan }}
+server_os = {{ infra.server_os }}
+admin_user = "{{ admin_user }}"
+admin_pubkeys = {{ admin_pubkeys | to_json }}
+admin_password_hash = "{{ admin_password | password_hash("sha512", admin_password_salt) }}"
