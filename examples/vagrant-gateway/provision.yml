@@ -2,6 +2,9 @@
   become: yes
 
   tasks:
+
+    # WIREGUARD --------------------------------------------------------------
+
     - name: debian unstable repository is enabled
       apt_repository:
         repo: deb http://deb.debian.org/debian/ unstable main
@@ -51,8 +54,39 @@
         state: started
         enabled: yes
 
+
+    # IPTABLES ---------------------------------------------------------------
+
+    - name: iptables persistence packages are installed
+      apt:
+        name:
+          - netfilter-persistent
+          - iptables-persistent
+        state: present
+
+    - name: iptables v4 rules file is up
+      template:
+        src: iptables-rules.v4.j2
+        dest: /etc/iptables/rules.v4
+        mode: 0600
+      notify: restart iptables
+
+    - name: netfilter is activated
+      service:
+        name: netfilter-persistent
+        state: started
+        enabled: yes
+
+
+    # HANDLERS ---------------------------------------------------------------
+
   handlers:
     - name: restart wg-quick
       service:
         name: wg-quick@wg0
+        state: restarted
+
+    - name: restart iptables
+      service:
+        name: netfilter-persistent
         state: restarted
