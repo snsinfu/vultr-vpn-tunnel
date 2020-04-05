@@ -3,6 +3,7 @@ ARTIFACTS = \
   $(GENERATED_FILES)
 
 CHECKPOINTS = \
+  _known_hosts \
   _terraform_init.ok \
   _terraform_apply.ok \
   _connection.ok \
