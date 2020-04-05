@@ -5,11 +5,14 @@ ARTIFACTS = \
 CHECKPOINTS = \
   _terraform_init.ok \
   _terraform_apply.ok \
+  _connection.ok \
   _provision.ok
 
 GENERATED_FILES = \
   terraform/terraform.tfvars \
-  ansible/inventory/_10-terraform
+  ansible/inventory/_10-terraform \
+  ansible/inventory/_20-wireguard \
+  ansible/_wireguard-client-*.conf
 
 
 # TASKS ----------------------------------------------------------------------
